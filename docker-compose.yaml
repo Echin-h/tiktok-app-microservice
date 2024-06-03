@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  user-rpc-service:
+    # 替换为您服务的Docker镜像名称
+    image: your-service-image:latest
+    container_name: user_rpc_service
+    ports:
+      - "8080:8080"  # 映射容器的8080端口到宿主机的8080端口
+    environment:
+      - NAME=user.rpc # 环境变量，用于服务名称
+      - LISTEN_ON=0.0.0.0:8080 # 环境变量，用于服务监听地址
+      - ETCD_HOSTS=127.0.0.1:2379 # 环境变量，用于etcd服务地址
+      - ETCD_KEY=user.rpc # 环境变量，用于服务注册到etcd的key
+    networks:
+      - backend
+    depends_on:
+      - etcd
+
+  etcd:
+    image: bitnami/etcd:latest # 使用Bitnami的etcd Docker镜像
+    container_name: etcd
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes # 允许无需认证的连接
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379 # 客户端访问地址
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379 # 监听客户端的地址
+    ports:
+      - "2379:2379" # 映射容器的2379端口到宿主机的2379端口
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
