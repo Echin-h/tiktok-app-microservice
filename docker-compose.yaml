@@ -1,9 +1,14 @@
-version: '3.7'
+version: '3'
+
+networks:
+  tiktok-microservice_net:
+    driver: bridge
+
 services:
   user-rpc-service:
     # 替换为您服务的Docker镜像名称
-    image: your-service-image:latest
-    container_name: user_rpc_service
+    image: tiktok-app-service:latest
+    container_name: tiktok-app-microservice
     ports:
       - "8080:8080"  # 映射容器的8080端口到宿主机的8080端口
     environment:
@@ -12,22 +17,53 @@ services:
       - ETCD_HOSTS=127.0.0.1:2379 # 环境变量，用于etcd服务地址
       - ETCD_KEY=user.rpc # 环境变量，用于服务注册到etcd的key
     networks:
-      - backend
-    depends_on:
-      - etcd
+      - tiktok-microservice_net
 
-  etcd:
-    image: bitnami/etcd:latest # 使用Bitnami的etcd Docker镜像
-    container_name: etcd
+  mysql:
+    image: mysql:5.7
+    container_name: tiktok-microservice-mysql
     environment:
-      - ALLOW_NONE_AUTHENTICATION=yes # 允许无需认证的连接
-      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379 # 客户端访问地址
-      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379 # 监听客户端的地址
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=tiktok_microservice
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - TZ=Asia/Shanghai
     ports:
-      - "2379:2379" # 映射容器的2379端口到宿主机的2379端口
+        - "33069:3306"
+    volumes:
+      - ./deploy/data/mysql/data:/var/lib/mysql
+    privileged: true
+    restart: always
     networks:
-      - backend
+      - tiktok-microservice_net
 
-networks:
-  backend:
-    driver: bridge
+  # redis container
+  redis:
+    image: redis:6.2.5
+    container_name: tiktok-microservice-redis
+    ports:
+      - "36379:6379"
+    environment:
+      - TZ=Asia/Shanghai
+      - REDIS_APPEND ONLY=yes  # 启用 AOF 持久化
+      - REDIS_APPEND FSYNC=every sec  # 设置 AOF 持久化的同步频率为每秒
+    volumes:
+      - ./deploy/data/redis/data:/data:rw
+#    command: "redis-server --requirepass G62m50oigInC30sf  --appendonly yes"
+    command: redis-server --requirepass "" --appendonly yes
+    privileged: true
+    restart: always
+    networks:
+      - tiktok-microservice_net
+
+
+#  进行心跳检测的服务
+#  heartbeat:
+#    image: your_heartbeat_image
+#    depends_on:
+#      - mysql
+#    environment:
+#      MYSQL_HOST: mysql
+#      MYSQL_USER: root
+#      MYSQL_PASSWORD: example
+#    command: /path/to/your/heartbeat/script.sh

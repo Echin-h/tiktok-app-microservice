@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 
-	"tiktok-app-microservice/user/rpc/internal/svc"
-	"tiktok-app-microservice/user/rpc/types/user"
+	"tiktok-app-microservice/service/rpc/user/internal/svc"
+	"tiktok-app-microservice/service/rpc/user/types/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,10 +23,8 @@ func NewGetUserByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 	}
 }
 
-func (l *GetUserByIdLogic) GetUserById(in *user.IdRequest) (*user.UserResponse, error) {
-	return &user.UserResponse{
-		Id:       "2",
-		Name:     "test",
-		Password: "123456",
-	}, nil
+func (l *GetUserByIdLogic) GetUserById(in *user.GetUserByIdRequest) (*user.GetUserReply, error) {
+	// todo: add your logic here and delete this line
+
+	return &user.GetUserReply{}, nil
 }
