@@ -3,6 +3,7 @@ module tiktok-app-microservice
 go 1.22
 
 require (
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/redis/go-redis/v9 v9.4.0
 	github.com/zeromicro/go-zero v1.6.5
 	golang.org/x/crypto v0.23.0

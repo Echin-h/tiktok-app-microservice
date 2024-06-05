@@ -15,6 +15,7 @@ const (
 const (
 	UserAlreadyExistCode codes.Code = iota + 2000
 	UserNotExistCode
+	NameOrPasswordEmptyCode
 )
 
 const (
@@ -27,8 +28,9 @@ var errCodeMap = map[codes.Code]string{
 	PasswordEncryptFailedCode: "密码加密失败",
 	MQErrorCode:               "消息队列错误",
 
-	UserAlreadyExistCode: "用户已存在",
-	UserNotExistCode:     "用户不存在",
+	UserAlreadyExistCode:    "用户已存在",
+	UserNotExistCode:        "用户不存在",
+	NameOrPasswordEmptyCode: "用户名或密码不能为空",
 
 	CommentNotExistCode: "评论不存在",
 }
@@ -41,6 +43,7 @@ var (
 	PassWordEncryptFailed = NewRpcError(PasswordEncryptFailedCode)
 	UserNotExist          = NewRpcError(UserNotExistCode)
 	CommentNotExist       = NewRpcError(CommentNotExistCode)
+	NameOrPasswordEmpty   = NewRpcError(NameOrPasswordEmptyCode)
 )
 
 type RpcError struct {

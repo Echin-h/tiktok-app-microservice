@@ -1,3 +1,19 @@
-Name: app
-Host: 127.0.0.1
+Name: tiktok-app-microservice
+Host: 0.0.0.0
 Port: 8888
+Timeout: 30
+
+# RPC 配置
+UserRpc:
+  EndPoints:
+    - 127.0.0.1:9001
+  NonBlock: true
+
+# JWT 配置
+Auth:
+  AccessSecret: microservice
+  AccessExpire: 10800 # 3h
+
+Redis:
+  Address: localhost:6379
+  DB: 4

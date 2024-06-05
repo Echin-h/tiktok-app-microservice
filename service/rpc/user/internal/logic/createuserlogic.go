@@ -27,11 +27,14 @@ func NewCreateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Create
 	}
 }
 
-func (l *CreateUserLogic) CreateUser(in *user.CreateUserRequest) (*user.CreatUserReply, error) {
+func (l *CreateUserLogic) CreateUser(u *user.CreateUserRequest) (*user.CreatUserReply, error) {
+	if u.Name == "" || u.Password == "" {
+		return nil, status.Error(rpcErr.NameOrPasswordEmpty.Code, rpcErr.NameOrPasswordEmpty.Message)
+	}
 	tx := l.svcCtx.DBList.Mysql.Begin()
 
 	var count int64
-	if err := tx.Model(&model.User{}).Where("username = ?", in.Name).Count(&count).Error; err != nil {
+	if err := tx.Model(&model.User{}).Where("username = ?", u.Name).Count(&count).Error; err != nil {
 		tx.Rollback()
 		return nil, status.Error(rpcErr.DataBaseError.Code, err.Error())
 	}
@@ -40,14 +43,14 @@ func (l *CreateUserLogic) CreateUser(in *user.CreateUserRequest) (*user.CreatUse
 		return nil, status.Error(rpcErr.UserAlreadyExist.Code, rpcErr.UserAlreadyExist.Message)
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
+	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
 		tx.Rollback()
 		return nil, status.Error(rpcErr.PassWordEncryptFailed.Code, err.Error())
 	}
 
 	newUser := &model.User{
-		Username: in.Name,
+		Username: u.Name,
 		Password: string(password),
 	}
 
