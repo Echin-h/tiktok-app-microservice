@@ -1,14 +1,63 @@
 syntax = "v1"
 
+import "dto/dto.api"
+
 // 用户注册
-type(
-    RegisterRequest struct {
-        Username string `json:"username"`
-        Password string `json:"password"`
-    }
-    RegisterResponse struct {
-        BasicReply
-        UserId int `json:"user_id"`
-        Token string `json:"token"`
-    }
+type (
+	RegisterReq {
+		Username string `form:"username" json:"username"`
+		Password string `form:"password" json:"password"`
+	}
+	RegisterResp {
+		BasicReply
+		UserId int64  `json:"user_id"`
+		Token  string `json:"token"`
+	}
 )
+
+// 用户登录
+type (
+	LoginReq {
+		Username string `json:"username" form:"username"`
+		Password string `json:"password" form:"password"`
+	}
+	LoginResp {
+		BasicReply
+		UserId int    `json:"user_id"`
+		Token  string `json:"token"`
+	}
+)
+
+@server (
+	group:  user
+	prefix: /tiktok/user
+)
+service app {
+	@handler login
+	post /login (LoginReq) returns (LoginResp)
+
+	@handler register
+	post /register (RegisterReq) returns (RegisterResp)
+}
+
+//@server(
+//    group: user
+//    prefix: /tiktok/user
+//    middleware: Auth
+//)
+//service app{
+//    @handler getUserInfo
+//    get /getUserInfo () returns (GetUserInfoReply)
+//}
+//
+//// 获取用户信息
+//type (
+//    GetUserInfoRequest {
+//        UserId int64    `form:"user_id"`
+//        Token  string `form:"token"`
+//    }
+//    GetUserInfoReply {
+//        BasicReply
+//        User User   `json:"user"`
+//    }
+//)

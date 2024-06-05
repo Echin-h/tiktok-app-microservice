@@ -1,0 +1,14 @@
+syntax = "v1"
+
+type BasicReply  {
+    Code int64    `json:"status_code"`
+    Msg  string `json:"status_msg"`
+}
+
+type User{
+    Id int64 `json:"id"`
+    Name string `json:"name"`
+    FollowCount int64 `json:"follow_count"`
+    FollowerCount int64 `json:"follower_count"`
+    IsFollowed bool `json:"is_followed"`
+}
