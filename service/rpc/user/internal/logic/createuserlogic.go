@@ -28,7 +28,6 @@ func NewCreateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Create
 }
 
 func (l *CreateUserLogic) CreateUser(in *user.CreateUserRequest) (*user.CreatUserReply, error) {
-	// todo: add your logic here and delete this line
 	tx := l.svcCtx.DBList.Mysql.Begin()
 
 	var count int64

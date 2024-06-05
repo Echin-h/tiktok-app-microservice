@@ -1,19 +1,19 @@
 Name: user.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:9001
 #Etcd:
 #  Hosts:
 #  - 127.0.0.1:2379
 #  Key: user.rpc
 
 DBList:
+  redis:
+    address: localhost:36379
+    db: 4
   mysql:
-#   address: mysql:33069
+    #address: mysql:33069
     address: localhost:33069
     username: user
     password: password
     dbname: tiktok_microservice
     tablePrefix: tiktok_
-  redis:
-    address: localhost:36379
-    db: 4
-    #   address: redis:36379
+

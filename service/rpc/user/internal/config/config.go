@@ -23,6 +23,6 @@ type MysqlConf struct {
 }
 
 type RedisConf struct {
-	Address string `yaml:"address"`
-	DB      int    `yaml:"db"`
+	Address string `yaml:"address" json:"address"`
+	DB      int    `yaml:"db" json:"db"`
 }
