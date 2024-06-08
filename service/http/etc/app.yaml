@@ -1,7 +1,6 @@
 Name: tiktok-app-microservice
 Host: 0.0.0.0
 Port: 8888
-Timeout: 30
 
 # RPC 配置
 UserRpc:

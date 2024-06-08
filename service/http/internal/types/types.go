@@ -7,8 +7,8 @@ type BasicReply struct {
 }
 
 type LoginReq struct {
-	Username string `json:"username" form:"username"`
-	Password string `json:"password" form:"password"`
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 type LoginResp struct {
@@ -18,8 +18,8 @@ type LoginResp struct {
 }
 
 type RegisterReq struct {
-	Username string `form:"username" json:"username"`
-	Password string `form:"password" json:"password"`
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 type RegisterResp struct {
