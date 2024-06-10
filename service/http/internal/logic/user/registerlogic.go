@@ -2,6 +2,10 @@ package user
 
 import (
 	"context"
+	"tiktok-app-microservice/common/err/apiErr"
+	"tiktok-app-microservice/common/err/rpcErr"
+	"tiktok-app-microservice/common/middleware"
+	"tiktok-app-microservice/service/rpc/user/types/user"
 
 	"tiktok-app-microservice/service/http/internal/svc"
 	"tiktok-app-microservice/service/http/internal/types"
@@ -24,7 +28,39 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterResp, err error) {
-	// todo: add your logic here and delete this line
+	logx.WithContext(l.ctx).Infof("register: %v", req)
+	if len(req.Username) > 32 {
+		return nil, apiErr.InvalidParams.WithDetails("username up to 32 characters")
+	} else if len(req.Password) > 32 {
+		return nil, apiErr.InvalidParams.WithDetails("password up to 32 characters")
+	}
 
-	return
+	createUser, err := l.svcCtx.UserRpc.CreateUser(l.ctx, &user.CreateUserRequest{
+		Name:     req.Username,
+		Password: req.Password,
+	})
+
+	if rpcErr.Is(err, rpcErr.UserAlreadyExist) {
+		return nil, apiErr.UserAlreadyExist
+	} else if err != nil {
+		logx.WithContext(l.ctx).Errorf("rpc CreateUser failed: %v", err)
+		return nil, apiErr.InternalError(l.ctx, err.Error())
+	}
+
+	token, err := middleware.CreatToken(
+		"",
+		createUser.Id,
+		l.svcCtx.Config.Auth.AccessSecret,
+		l.svcCtx.Config.Auth.AccessExpire,
+	)
+
+	if err != nil {
+		return nil, apiErr.GenerateTokenFailed
+	}
+
+	return &types.RegisterResp{
+		BasicReply: types.BasicReply(apiErr.Success),
+		UserId:     createUser.GetId(),
+		Token:      token,
+	}, nil
 }
