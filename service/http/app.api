@@ -1,5 +1,5 @@
 syntax = "v1"
+
 //  在当前目录下生成代码
 //  goctl api go -api app.api -dir .
-
 import "apis/user.api"

@@ -6,6 +6,46 @@ type BasicReply struct {
 	Msg  string `json:"status_msg"`
 }
 
+type FansListReq struct {
+	UserId int64  `form:"user_id"`
+	Token  string `form:"token"`
+}
+
+type FansListResp struct {
+	BasicReply
+	Users []User `json:"user_list"`
+}
+
+type FollowListReq struct {
+	UserId int64  `form:"user_id"`
+	Token  string `form:"token"`
+}
+
+type FollowListResp struct {
+	BasicReply
+	Users []User `json:"user_list"`
+}
+
+type FollowReq struct {
+	Token      string `form:"token"`
+	ToUserId   int64  `form:"to_user_id"`
+	ActionType int64  `form:"action_type"`
+}
+
+type FollowResp struct {
+	BasicReply
+}
+
+type GetUserInfoRequest struct {
+	UserId int64  `form:"user_id"`
+	Token  string `form:"token"`
+}
+
+type GetUserInfoResp struct {
+	BasicReply
+	User User `json:"user"`
+}
+
 type LoginReq struct {
 	Username string `form:"username"`
 	Password string `form:"password"`

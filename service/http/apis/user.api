@@ -43,11 +43,11 @@ service app {
 @server(
     group: user
     prefix: /tiktok/user
-    middleware: Auth
+    middleware : Auth
 )
 service app{
     @handler getUserInfo
-    get /getUserInfo () returns (GetUserInfoResp)
+    get /getUserInfo (GetUserInfoRequest) returns (GetUserInfoResp)
 
 	@handler Follow
 	post /follow (FollowReq) returns (FollowResp)

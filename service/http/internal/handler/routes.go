@@ -26,4 +26,31 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithPrefix("/tiktok/user"),
 	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/fansList",
+				Handler: user.FansListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/follow",
+				Handler: user.FollowHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/followList",
+				Handler: user.FollowListHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/getUserInfo",
+				Handler: user.GetUserInfoHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/tiktok/user"),
+	)
 }
