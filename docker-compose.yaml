@@ -36,6 +36,11 @@ services:
     restart: always
     networks:
       - tiktok-microservice_net
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost","--silent"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
 
   # redis container
   redis:
@@ -55,15 +60,9 @@ services:
     restart: always
     networks:
       - tiktok-microservice_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
 
-
-#  进行心跳检测的服务
-#  heartbeat:
-#    image: your_heartbeat_image
-#    depends_on:
-#      - mysql
-#    environment:
-#      MYSQL_HOST: mysql
-#      MYSQL_USER: root
-#      MYSQL_PASSWORD: example
-#    command: /path/to/your/heartbeat/script.sh
