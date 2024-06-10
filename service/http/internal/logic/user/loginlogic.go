@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/logx"
 	"golang.org/x/crypto/bcrypt"
 	"tiktok-app-microservice/common/err/apiErr"
 	"tiktok-app-microservice/common/err/rpcErr"
@@ -9,8 +10,6 @@ import (
 	"tiktok-app-microservice/service/http/internal/svc"
 	"tiktok-app-microservice/service/http/internal/types"
 	"tiktok-app-microservice/service/rpc/user/types/user"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type LoginLogic struct {
@@ -28,6 +27,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err error) {
+
 	GetUserByNameReply, err := l.svcCtx.UserRpc.GetUserByName(l.ctx, &user.GetUserByNameRequest{
 		Name: req.Username,
 	})

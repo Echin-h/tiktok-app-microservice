@@ -40,24 +40,70 @@ service app {
 	post /register (RegisterReq) returns (RegisterResp)
 }
 
-//@server(
-//    group: user
-//    prefix: /tiktok/user
-//    middleware: Auth
-//)
-//service app{
-//    @handler getUserInfo
-//    get /getUserInfo () returns (GetUserInfoReply)
-//}
-//
-//// 获取用户信息
-//type (
-//    GetUserInfoRequest {
-//        UserId int64    `form:"user_id"`
-//        Token  string `form:"token"`
-//    }
-//    GetUserInfoReply {
-//        BasicReply
-//        User User   `json:"user"`
-//    }
-//)
+@server(
+    group: user
+    prefix: /tiktok/user
+    middleware: Auth
+)
+service app{
+    @handler getUserInfo
+    get /getUserInfo () returns (GetUserInfoResp)
+
+	@handler Follow
+	post /follow (FollowReq) returns (FollowResp)
+
+	@handler FollowList
+	get /followList (FollowListReq) returns (FollowListResp)
+
+	@handler FansList
+	get /fansList (FansListReq) returns (FansListResp)
+
+}
+
+// 获取用户信息
+type (
+    GetUserInfoRequest {
+        UserId int64    `form:"user_id"`
+        Token  string `form:"token"`
+    }
+    GetUserInfoResp {
+        BasicReply
+        User User   `json:"user"`
+    }
+)
+
+type (
+	FollowReq {
+		//		UserId     int64    `form:"user_id"`
+		Token      string `form:"token"`
+		ToUserId   int64    `form:"to_user_id"`
+		ActionType int64    `form:"action_type"`
+	}
+	FollowResp {
+		BasicReply
+	}
+)
+
+// 获取关注列表
+type (
+	FollowListReq {
+		UserId int64    `form:"user_id"`
+		Token  string `form:"token"`
+	}
+	FollowListResp {
+		BasicReply
+		Users []User `json:"user_list"`
+	}
+)
+
+// 获取粉丝列表
+type (
+	FansListReq {
+		UserId int64    `form:"user_id"`
+		Token  string `form:"token"`
+	}
+	FansListResp {
+		BasicReply
+		Users []User `json:"user_list"`
+	}
+)
